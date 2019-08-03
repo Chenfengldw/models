@@ -24,15 +24,9 @@ import unittest
 import tensorflow as tf  # pylint: disable=g-bad-import-order
 
 from official.utils.logs import hooks_helper
-from official.utils.misc import keras_utils
 
 
 class BaseTest(unittest.TestCase):
-
-  def setUp(self):
-    super(BaseTest, self).setUp()
-    if keras_utils.is_v2_0:
-      tf.compat.v1.disable_eager_execution()
 
   def test_raise_in_non_list_names(self):
     with self.assertRaises(ValueError):
@@ -51,7 +45,7 @@ class BaseTest(unittest.TestCase):
     returned_hook = hooks_helper.get_train_hooks(
         [test_hook_name], model_dir="", **kwargs)
     self.assertEqual(len(returned_hook), 1)
-    self.assertIsInstance(returned_hook[0], tf.estimator.SessionRunHook)
+    self.assertIsInstance(returned_hook[0], tf.train.SessionRunHook)
     self.assertEqual(returned_hook[0].__class__.__name__.lower(),
                      expected_hook_name)
 

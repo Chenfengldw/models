@@ -18,7 +18,6 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import sys
 import codecs
 import functools
 
@@ -35,19 +34,12 @@ _help_wrap = functools.partial(flags.text_wrap, length=80, indent="",
 
 
 # Pretty formatting causes issues when utf-8 is not installed on a system.
-def _stdout_utf8():
-  try:
-    codecs.lookup("utf-8")
-  except LookupError:
-    return False
-  return sys.stdout.encoding == "UTF-8"
-
-
-if _stdout_utf8():
+try:
+  codecs.lookup("utf-8")
   help_wrap = _help_wrap
-else:
+except LookupError:
   def help_wrap(text, *args, **kwargs):
-    return _help_wrap(text, *args, **kwargs).replace(u"\ufeff", u"")
+    return _help_wrap(text, *args, **kwargs).replace("\ufeff", "")
 
 
 # Replace None with h to also allow -h
